@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Polymarket Tracker</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0f172a;
+        --panel: #111c36;
+        --panel-soft: #16203a;
+        --text: #e2e8f0;
+        --text-soft: #94a3b8;
+        --accent: #3b82f6;
+        --accent-soft: rgba(59, 130, 246, 0.16);
+        --success: #34d399;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      header {
+        padding: 22px 28px;
+        background: var(--panel);
+        box-shadow: 0 8px 28px rgba(15, 23, 42, 0.55);
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 20px;
+        letter-spacing: 0.3px;
+      }
+      .subtitle {
+        margin: 6px 0 0;
+        font-size: 13px;
+        color: var(--text-soft);
+      }
+      .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        align-items: flex-end;
+      }
+      .control {
+        display: flex;\n        flex-direction: column;\n        gap: 6px;\n        font-size: 12px;\n        color: #dbe7ff;
+      }
+      .control select,
+      .control input {
+        background: #f1f5ff;\n        border: 1px solid rgba(59, 130, 246, 0.35);\n        border-radius: 7px;\n        padding: 8px 12px;\n        color: #0f172a;
+        font-size: 13px;
+        min-width: 170px;
+      }
+      .control select:focus,\n      .control input:focus {\n        outline: 2px solid rgba(59, 130, 246, 0.7);\n        outline-offset: 1px;\n      }
+      .range-row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .hidden {
+        display: none !important;
+      }
+      button.primary,
+      button.secondary {
+        border: none;
+        border-radius: 8px;
+        padding: 10px 22px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.1s ease, box-shadow 0.1s ease;
+      }
+      button.primary {
+        background: linear-gradient(135deg, var(--accent), #2563eb);
+        color: white;
+        box-shadow: 0 12px 30px rgba(37, 99, 235, 0.35);
+      }
+      button.primary:disabled {
+        opacity: 0.6;
+        cursor: wait;
+        box-shadow: none;
+      }
+      button.secondary {
+        background: rgba(148, 163, 184, 0.18);
+        color: #e5edff;
+      }
+      main {
+        padding: 26px;
+        height: calc(100vh - 148px);
+        overflow-y: auto;
+      }
+      #status {
+        margin-bottom: 18px;
+        font-size: 14px;
+        color: #93c5fd;
+      }
+      .card {
+        background: var(--panel-soft);
+        border-radius: 12px;
+        padding: 18px;
+        margin-bottom: 18px;
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.38);
+      }
+      .summary {
+        margin: 0 0 12px;
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .context-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 12px;
+        border-radius: 999px;
+        background: rgba(34, 197, 94, 0.2);
+        color: #bbf7d0;
+        border: 1px solid rgba(34, 197, 94, 0.35);
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 14px;
+      }
+      .meta {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 16px;
+        font-size: 13px;
+        line-height: 1.55;
+      }
+      .meta li {
+        margin-bottom: 4px;
+      }
+      .meta strong {
+        color: #e5edff;
+      }
+      .actions {
+        display: flex;
+        justify-content: flex-end;
+      }
+      .link-button {
+        border: none;
+        border-radius: 8px;
+        padding: 8px 18px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        background: linear-gradient(135deg, var(--success), #10b981);
+        color: #024e2a;
+      }
+      .empty {
+        padding: 36px;
+        text-align: center;
+        background: var(--panel-soft);
+        border-radius: 12px;
+        color: var(--text-soft);
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.35);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>
+        <h1>Polymarket Wallet Tracker</h1>
+        <p class="subtitle">Pick a scan window, highlight fresh wallets, and jump straight to the market.</p>
+      </div>
+      <div class="form-row">
+        <label class="control">
+          Scan Mode
+          <select id="scan-mode">
+            <option value="incremental">Continuous (since last scan)</option>
+            <option value="calendar-day">Specific Day (00:00-23:59 ET)</option>
+            <option value="custom-range">Custom UTC Range</option>
+            <option value="recent">Recent Activity</option>
+          </select>
+        </label>
+        <label class="control hidden" id="calendar-day-group">
+          Calendar Day (ET)
+          <input type="date" id="calendar-day" />
+        </label>
+        <div id="custom-range-group" class="range-row hidden">
+          <label class="control">
+            Start (UTC)
+            <input type="datetime-local" id="start-time" />
+          </label>
+          <label class="control">
+            End (UTC)
+            <input type="datetime-local" id="end-time" />
+          </label>
+        </div>
+        <label class="control hidden" id="recent-minutes-group">
+          Recent Window
+          <select id="recent-minutes">
+            <option value="15">Last 15 minutes</option>
+            <option value="30">Last 30 minutes</option>
+            <option value="45">Last 45 minutes</option>
+            <option value="60" selected>Last 60 minutes</option>
+            <option value="75">Last 75 minutes</option>
+            <option value="90">Last 90 minutes</option>
+            <option value="105">Last 105 minutes</option>
+            <option value="120">Last 120 minutes</option>
+            <option value="135">Last 135 minutes</option>
+            <option value="150">Last 150 minutes</option>
+            <option value="165">Last 165 minutes</option>
+            <option value="180">Last 180 minutes</option>
+            <option value="195">Last 195 minutes</option>
+            <option value="210">Last 210 minutes</option>
+            <option value="225">Last 225 minutes</option>
+            <option value="240">Last 240 minutes</option>
+          </select>
+        </label>
+        <label class="control">
+          Wallet Age = (hours)
+          <select id="wallet-age-hours">
+            <option value="12">12</option>
+            <option value="24">24</option>
+            <option value="36">36</option>
+            <option value="48" selected>48</option>
+            <option value="72">72</option>
+            <option value="96">96</option>
+          </select>
+        </label>
+        <button class="primary" id="run-scan">Run Scan</button>
+        <button class="secondary" id="view-scans">View Reports</button>
+      </div>
+    </header>
+    <main>
+      <div id="status">Choose a scan mode and hit “Run Scan” to fetch the latest bets.</div>
+      <div id="results"></div>
+    </main>
+    <script src="renderer.js"></script>
+  </body>
+</html>
+
+
+
+
