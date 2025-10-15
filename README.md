@@ -77,10 +77,9 @@ Each scan prints plain-English summaries, updates data/state.json, and writes a 
   npm run app
   `
   The app exposes a *Scan Options* dropdown:
-  - **Continuous** – incremental scans since the last run (default)
-  - **Specific Day** – scan 00:00–23:59 Eastern for a selected day
-  - **Custom UTC Range** – manual start/end (max 24 hours)
-  - **Recent Activity** – preset windows (15 ? 240 minutes)
+  - **Recent Activity (default)** - preset windows (15-240 minutes) with a rolling cutoff
+  - **Specific Day** - scan 00:00-23:59 Eastern for a selected day
+  - **Custom UTC Range** - manual start/end (max 24 hours)
 
   You can also set the “Wallet Age = (hours)” filter (defaults to 48). The **View Reports** button opens the uns/ folder.
 
@@ -92,7 +91,7 @@ All modes reuse the same logic—each scan processes the requested window, prints 
 
 - **Console / UI** – summaries like Wallet 0x… bet ,000 USDC that “Chiefs” will NOT happen in “Raiders vs. Chiefs”, with implied positions, wallet age (in hours), Eastern Time timestamps, and market links.
 - **TXT archive** – every scan logs the same content in uns/scan-YYYY-MM-DDTHH-mm-ssZ.txt.
-- **State** – data/state.json tracks wallet history, alerts, and the last processed block (for incremental scans).
+- **State** – data/state.json tracks wallet history, alerts, and the last processed block for reference.
 
 ---
 
@@ -114,3 +113,5 @@ All modes reuse the same logic—each scan processes the requested window, prints 
 - **Slow replays** – shrink INITIAL_LOOKBACK_BLOCKS or use a faster RPC endpoint.
 
 Stay ethical, verify your insights, and proceed responsibly.
+
+

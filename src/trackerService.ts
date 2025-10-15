@@ -30,7 +30,7 @@ export interface TrackerRunResult {
 
 export interface RunOptions {
   saveLog?: boolean;
-  scanMode?: "incremental" | "calendar-day" | "custom-range" | "recent";
+  scanMode?: "calendar-day" | "custom-range" | "recent";
   calendarDay?: string;
   recentMinutes?: number;
   from?: string;
@@ -50,7 +50,7 @@ export const runTracker = async (
 ): Promise<TrackerRunResult> => {
   const {
     saveLog = true,
-    scanMode = "incremental",
+    scanMode = "recent",
     calendarDay,
     recentMinutes,
     from,
@@ -122,12 +122,12 @@ export const runTracker = async (
     ? `[ALERT] Detected ${alerts.length} high-value trades from newly created wallets.`
     : "No newly created wallets exceeded the configured trade threshold.";
   const windowMessage = range
-    ? `${baseMessage} (window: ${range.from} → ${range.to})`
+    ? `${baseMessage} (window: ${range.from} to ${range.to})`
     : baseMessage;
 
   const logLines = [timestamp, windowMessage];
   if (range) {
-    logLines.push(`Requested window: ${range.from} → ${range.to}`);
+    logLines.push(`Requested window: ${range.from} to ${range.to}`);
   }
   logLines.push(`Wallet age cutoff: ${walletAgeCutoff} hours`);
   for (const alert of enrichedAlerts) {
@@ -296,8 +296,10 @@ const normalizeRange = (
       }
       return { from: from.toISO(), to: now.toISO() };
     }
-    case "incremental":
     default:
-      return undefined;
+      throw new Error(`Unsupported scan mode: ${mode ?? "unspecified"}.`);
   }
 };
+
+
+

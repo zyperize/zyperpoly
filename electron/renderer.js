@@ -1,4 +1,4 @@
-const runButton = document.getElementById("run-scan");
+ï»¿const runButton = document.getElementById("run-scan");
 const viewButton = document.getElementById("view-scans");
 const scanModeSelect = document.getElementById("scan-mode");
 const calendarDayInput = document.getElementById("calendar-day");
@@ -11,6 +11,8 @@ const recentSelect = document.getElementById("recent-minutes");
 const walletAgeSelect = document.getElementById("wallet-age-hours");
 const statusEl = document.getElementById("status");
 const resultsEl = document.getElementById("results");
+
+scanModeSelect.value = "recent";
 
 const renderAlerts = (alerts) => {
   resultsEl.innerHTML = "";
@@ -96,7 +98,7 @@ updateModeVisibility();
 
 runButton.addEventListener("click", async () => {
   runButton.disabled = true;
-  statusEl.textContent = "Scanning Polymarket…";
+  statusEl.textContent = "Scanning Polymarketâ€¦";
   resultsEl.innerHTML = "";
 
   try {
@@ -133,7 +135,7 @@ runButton.addEventListener("click", async () => {
 
     const result = await window.tracker.runScan(payload);
     const baseMessage = result.message + (result.logPath ? ` (Report saved to ${result.logPath})` : "");
-    statusEl.textContent = `${baseMessage} • Wallet age cutoff: ${walletAgeHours} hours`;
+    statusEl.textContent = `${baseMessage} â€¢ Wallet age cutoff: ${walletAgeHours} hours`;
     renderAlerts(result.alerts);
   } catch (error) {
     console.error(error);
@@ -146,3 +148,4 @@ runButton.addEventListener("click", async () => {
 viewButton.addEventListener("click", () => {
   window.tracker.openScans();
 });
+
