@@ -9,7 +9,7 @@ Monitor Polymarket for large trades placed by newly created wallets. The tracker
 Each scan prints plain-English summaries, updates data/state.json, and writes a TXT report into ./runs.
 
 > **Ethics & Compliance**
-> Use this tool responsibly and ensure your monitoring aligns with local laws, privacy guidelines, and Polymarketís terms of service.
+> Use this tool responsibly and ensure your monitoring aligns with local laws, privacy guidelines, and Polymarket‚Äôs terms of service.
 
 ---
 
@@ -23,11 +23,11 @@ Each scan prints plain-English summaries, updates data/state.json, and writes a 
 ### Setup
 
 1. **Install dependencies**
-   `ash
+   ```bash
    npm install
-   `
+   ```
 
-2. **Configure environment (optional)** ñ copy .env.example to .env and tweak values.
+2. **Configure environment (optional)** ‚Äì copy .env.example to .env and tweak values.
 
    | Variable | Default | Notes |
    | --- | --- | --- |
@@ -35,9 +35,9 @@ Each scan prints plain-English summaries, updates data/state.json, and writes a 
    | POLYMARKET_HOST | https://clob.polymarket.com | Polymarket CLOB REST host. |
    | POLYMARKET_CHAIN_ID | 137 | Polygon mainnet chain ID. |
    | TRADE_THRESHOLD_USD | 10000 | Minimum USDC notional required for an alert. |
-   | NEW_WALLET_WINDOW_HOURS | 72 | Maximum age (hours) for a wallet to qualify as ìnew.î |
+   | NEW_WALLET_WINDOW_HOURS | 72 | Maximum age (hours) for a wallet to qualify as ‚Äúnew.‚Äù |
    | INITIAL_LOOKBACK_BLOCKS | 90000 | Historical catch-up window (~48 hours) when state is empty. |
-   | BLOCK_BATCH_SIZE | 9 | Blocks per eth_getLogs call (9 + 1 keeps Alchemyís free tier happy). |
+   | BLOCK_BATCH_SIZE | 9 | Blocks per eth_getLogs call (9 + 1 keeps Alchemy‚Äôs free tier happy). |
    | MAX_ALERT_HISTORY | 500 | Alerts retained in data/state.json. |
    | MARKETS_CACHE_TTL_HOURS | 6 | How often to refresh the cached market metadata. |
    | ETHERSCAN_API_KEY | _(unset)_ | Supply to fetch wallet-creation timestamps. |
@@ -47,16 +47,16 @@ Each scan prints plain-English summaries, updates data/state.json, and writes a 
    | TRACKER_DATA_DIR | ./data | Directory for state/market cache files. |
 
    Example .env snippet:
-   `ini
+   ```ini
    POLYGON_RPC_URL=https://polygon-mainnet.g.alchemy.com/v2/<YOUR_KEY>
    ETHERSCAN_API_KEY=your_api_key_here
    WALLET_MAX_AGE_HOURS=48
-   `
+   ```
 
 3. **First run**
-   `ash
+   ```bash
    npm run dev
-   `
+   ```
    Cached market metadata is reused until it expires.
 
 ---
@@ -64,34 +64,34 @@ Each scan prints plain-English summaries, updates data/state.json, and writes a 
 ### Running the Tracker
 
 - **CLI (development)**
-  `ash
+  ```bash
   npm run dev
-  `
+  ```
 - **CLI (compiled)**
-  `ash
+  ```bash
   npm run build
   npm start
-  `
+  ```
 - **Desktop app (Electron UI)**
-  `ash
+  ```bash
   npm run app
-  `
+  ```
   The app exposes a *Scan Options* dropdown:
   - **Recent Activity (default)** - preset windows (15-240 minutes) with a rolling cutoff
   - **Specific Day** - scan 00:00-23:59 Eastern for a selected day
   - **Custom UTC Range** - manual start/end (max 24 hours)
 
-  You can also set the ìWallet Age = (hours)î filter (defaults to 48). The **View Reports** button opens the uns/ folder.
+  You can also set the ‚ÄúWallet Age = (hours)‚Äù filter (defaults to 48). The **View Reports** button opens the `runs/` folder.
 
-All modes reuse the same logicóeach scan processes the requested window, prints summaries, and archives uns/scan-<timestamp>.txt.
+All modes reuse the same logic‚Äîeach scan processes the requested window, prints summaries, and archives `runs/`scan-<timestamp>.txt.
 
 ---
 
 ### Outputs
 
-- **Console / UI** ñ summaries like Wallet 0xÖ bet ,000 USDC that ìChiefsî will NOT happen in ìRaiders vs. Chiefsî, with implied positions, wallet age (in hours), Eastern Time timestamps, and market links.
-- **TXT archive** ñ every scan logs the same content in uns/scan-YYYY-MM-DDTHH-mm-ssZ.txt.
-- **State** ñ data/state.json tracks wallet history, alerts, and the last processed block for reference.
+- **Console / UI** ‚Äì summaries like a wallet's trade size and market outcome, with implied positions, wallet age (in hours), Eastern Time timestamps, and market links.
+- **TXT archive** ‚Äì every scan logs the same content in `runs/`scan-YYYY-MM-DDTHH-mm-ssZ.txt.
+- **State** ‚Äì data/state.json tracks wallet history, alerts, and the last processed block for reference.
 
 ---
 
@@ -107,10 +107,10 @@ All modes reuse the same logicóeach scan processes the requested window, prints 
 
 ### Troubleshooting
 
-- **RPC throttling / ìtoo many requestsî** ñ lower BLOCK_BATCH_SIZE, slow down scans, or upgrade to a higher-tier RPC.
-- **eth_getLogs 10-block limit (Alchemy free)** ñ keep BLOCK_BATCH_SIZE = 9 (already set in .env).
-- **Missing alerts** ñ adjust TRADE_THRESHOLD_USD, widen NEW_WALLET_WINDOW_HOURS, or lower the wallet-age cutoff.
-- **Slow replays** ñ shrink INITIAL_LOOKBACK_BLOCKS or use a faster RPC endpoint.
+- **RPC throttling / ‚Äútoo many requests‚Äù** ‚Äì lower BLOCK_BATCH_SIZE, slow down scans, or upgrade to a higher-tier RPC.
+- **eth_getLogs 10-block limit (Alchemy free)** ‚Äì keep BLOCK_BATCH_SIZE = 9 (already set in .env).
+- **Missing alerts** ‚Äì adjust TRADE_THRESHOLD_USD, widen NEW_WALLET_WINDOW_HOURS, or lower the wallet-age cutoff.
+- **Slow replays** ‚Äì shrink INITIAL_LOOKBACK_BLOCKS or use a faster RPC endpoint.
 
 Stay ethical, verify your insights, and proceed responsibly.
 
