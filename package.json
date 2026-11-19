@@ -16,7 +16,7 @@
   "dependencies": {
     "@polymarket/clob-client": "^4.22.7",
     "dotenv": "^17.2.3",
-    "electron": "^38.2.2",
+    "electron": "^42.11.16",
     "luxon": "^3.4.4"
   },
   "devDependencies": {
